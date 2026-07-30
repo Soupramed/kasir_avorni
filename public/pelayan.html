@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Avorni Coffee — Panel Pelayan">
+  <title>Pelayan — Avorni Coffee</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/pelayan.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🧑‍🍳</text></svg>">
+</head>
+<body>
+  <!-- Top Bar -->
+  <header class="topbar" id="topbar">
+    <div class="topbar-left">
+      <span class="topbar-logo">☕</span>
+      <h1 class="topbar-title">Avorni <span>Pelayan</span></h1>
+    </div>
+    <nav class="topbar-nav">
+      <button class="tab-btn active" data-tab="order" id="tab-order">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        Buat Pesanan
+      </button>
+      <button class="tab-btn" data-tab="status" id="tab-status">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        Pesanan Saya
+        <span class="tab-count hidden" id="active-count">0</span>
+      </button>
+    </nav>
+    <div class="topbar-right">
+      <span class="topbar-user" id="user-name">Pelayan</span>
+      <button class="btn btn-ghost btn-sm" id="logout-btn">Keluar</button>
+    </div>
+  </header>
+
+  <!-- Tab: Buat Pesanan -->
+  <main class="page-content" id="page-order">
+    <div class="order-layout">
+      <!-- Menu Area -->
+      <section class="menu-area">
+        <!-- Category Tabs -->
+        <div class="category-tabs">
+          <button class="cat-btn active" data-cat="kopi" id="cat-kopi">☕ Kopi</button>
+          <button class="cat-btn" data-cat="non-kopi" id="cat-nonkopi">🍵 Non-Kopi</button>
+          <button class="cat-btn" data-cat="makanan" id="cat-makanan">🍽️ Makanan</button>
+        </div>
+        <!-- Menu Grid -->
+        <div class="menu-grid" id="menu-grid">
+          <!-- Rendered by JS -->
+        </div>
+      </section>
+
+      <!-- Cart Sidebar -->
+      <aside class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+          <h2>🛒 Keranjang</h2>
+          <button class="btn btn-ghost btn-sm" id="clear-cart-btn" title="Kosongkan keranjang">Hapus Semua</button>
+        </div>
+
+        <!-- Customer Name -->
+        <div class="cart-table-select">
+          <label class="form-label" for="customer-name">Nama Pemesan</label>
+          <input type="text" class="form-input" id="customer-name" placeholder="Masukkan nama...">
+        </div>
+
+        <!-- Table Selection -->
+        <div class="cart-table-select">
+          <label class="form-label" for="table-select">Nomor Meja</label>
+          <button class="btn btn-ghost w-full" id="open-floorplan-btn" style="border:1px solid rgba(255,255,255,0.1); justify-content:space-between; padding:var(--space-md);">
+            <span id="selected-table-text">📍 Pilih Meja (Denah)</span>
+            <span style="opacity:0.5;">▼</span>
+          </button>
+          <input type="hidden" id="table-select-hidden">
+        </div>
+
+        <!-- Cart Items -->
+        <div class="cart-items" id="cart-items">
+          <div class="empty-state" id="cart-empty">
+            <div class="empty-state-icon">🛒</div>
+            <div class="empty-state-text">Keranjang masih kosong. Pilih menu untuk memulai pesanan.</div>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="cart-notes">
+          <label class="form-label" for="order-notes">Catatan Pesanan</label>
+          <textarea class="form-textarea" id="order-notes" placeholder="Contoh: Gula dipisah, Extra shot espresso..." rows="2"></textarea>
+        </div>
+
+        <!-- Cart Footer -->
+        <div class="cart-footer">
+          <div class="cart-total">
+            <span>Total</span>
+            <span class="cart-total-price" id="cart-total">Rp 0</span>
+          </div>
+          <button class="btn btn-primary btn-lg w-full" id="submit-order-btn" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            Kirim Pesanan
+          </button>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- Tab: Pesanan Saya -->
+  <section class="page-content hidden" id="page-status">
+    <div class="my-orders-header">
+      <h2>Pesanan Aktif</h2>
+      <div class="status-filters">
+        <button class="filter-btn active" data-filter="all">Semua</button>
+        <button class="filter-btn" data-filter="baru">Baru</button>
+        <button class="filter-btn" data-filter="proses">Proses</button>
+        <button class="filter-btn" data-filter="siap">Siap</button>
+      </div>
+    </div>
+    <div class="my-orders-grid" id="my-orders-grid">
+      <div class="empty-state" id="orders-empty">
+        <div class="empty-state-icon">📋</div>
+        <div class="empty-state-text">Belum ada pesanan. Buat pesanan baru di tab "Buat Pesanan".</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mobile Cart Toggle -->
+  <button class="cart-fab" id="cart-fab">
+    🛒
+    <span class="cart-fab-count hidden" id="cart-fab-count">0</span>
+  </button>
+
+  <!-- ===== MODAL: Floor Plan ===== -->
+  <div class="modal-overlay" id="modal-floorplan">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h2 id="floorplan-modal-title">📍 Denah Meja Avorni</h2>
+        <button class="modal-close" id="close-floorplan-btn">✕</button>
+      </div>
+      <div class="modal-body floorplan-body">
+        
+        <div class="floorplan-zone">
+          <div class="floorplan-zone-title">Indoor Area (AC)</div>
+          <div class="floorplan-grid indoor-grid">
+            <button class="floorplan-table table-square" data-table="1"><span class="table-no">1</span></button>
+            <button class="floorplan-table table-square" data-table="2"><span class="table-no">2</span></button>
+            <button class="floorplan-table table-square" data-table="3"><span class="table-no">3</span></button>
+            <button class="floorplan-table table-square" data-table="4"><span class="table-no">4</span></button>
+            <button class="floorplan-table table-round" data-table="5"><span class="table-no">5</span></button>
+            <button class="floorplan-table table-round" data-table="6"><span class="table-no">6</span></button>
+            <button class="floorplan-table table-round" data-table="7"><span class="table-no">7</span></button>
+            <button class="floorplan-table table-round" data-table="8"><span class="table-no">8</span></button>
+          </div>
+        </div>
+
+        <div class="floorplan-zone">
+          <div class="floorplan-zone-title">Outdoor (Smoking Area)</div>
+          <div class="floorplan-grid outdoor-grid">
+            <button class="floorplan-table table-square" data-table="9"><span class="table-no">9</span></button>
+            <button class="floorplan-table table-square" data-table="10"><span class="table-no">10</span></button>
+            <button class="floorplan-table table-square" data-table="11"><span class="table-no">11</span></button>
+            <button class="floorplan-table table-square" data-table="12"><span class="table-no">12</span></button>
+            <button class="floorplan-table table-round" data-table="13"><span class="table-no">13</span></button>
+            <button class="floorplan-table table-round" data-table="14"><span class="table-no">14</span></button>
+            <button class="floorplan-table table-round" data-table="15"><span class="table-no">15</span></button>
+            <button class="floorplan-table table-round" data-table="16"><span class="table-no">16</span></button>
+          </div>
+        </div>
+
+        <div class="floorplan-zone">
+          <div class="floorplan-zone-title">Bar / VIP Area</div>
+          <div class="floorplan-grid bar-grid">
+            <button class="floorplan-table table-bar" data-table="17"><span class="table-no">17</span></button>
+            <button class="floorplan-table table-bar" data-table="18"><span class="table-no">18</span></button>
+            <button class="floorplan-table table-bar" data-table="19"><span class="table-no">19</span></button>
+            <button class="floorplan-table table-bar" data-table="20"><span class="table-no">20</span></button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/pelayan.js?v=2"></script>
+</body>
+</html>

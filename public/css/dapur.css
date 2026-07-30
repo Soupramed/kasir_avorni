@@ -1,0 +1,413 @@
+/* ============================================
+   AVORNI COFFEE POS — Dapur (Kitchen) Styles
+   ============================================ */
+
+/* --- Kitchen Top Bar --- */
+.kitchen-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-xl);
+  z-index: 100;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.topbar-logo {
+  font-size: 1.6rem;
+}
+
+.topbar-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--brand-primary);
+}
+
+.topbar-title span {
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+/* Kitchen Stats */
+.kitchen-stats {
+  display: flex;
+  gap: var(--space-lg);
+}
+
+.kitchen-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.kitchen-stat-count {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--brand-light);
+}
+
+.kitchen-stat-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+/* Notification Bell */
+.notification-bell {
+  position: relative;
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.notification-bell:hover {
+  background: var(--bg-tertiary);
+}
+
+.notification-bell.ringing {
+  animation: ring 0.5s ease;
+}
+
+@keyframes ring {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(15deg); }
+  40% { transform: rotate(-15deg); }
+  60% { transform: rotate(10deg); }
+  80% { transform: rotate(-10deg); }
+}
+
+.notif-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 18px;
+  height: 18px;
+  background: var(--status-new);
+  color: white;
+  border-radius: 50%;
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: bounceIn 0.4s ease;
+}
+
+.notif-badge.hidden { display: none; }
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.topbar-user {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* --- Kitchen Board (3-Column Kanban) --- */
+.kitchen-board {
+  margin-top: 70px;
+  height: calc(100vh - 70px);
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0;
+}
+
+/* --- Column --- */
+.kitchen-column {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--glass-border);
+  overflow: hidden;
+}
+
+.kitchen-column:last-child {
+  border-right: none;
+}
+
+.column-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 2px solid;
+  flex-shrink: 0;
+}
+
+.column-header h2 {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.column-header-new {
+  border-bottom-color: var(--status-new);
+  background: var(--status-new-bg);
+}
+
+.column-header-process {
+  border-bottom-color: var(--status-process);
+  background: var(--status-process-bg);
+}
+
+.column-header-ready {
+  border-bottom-color: var(--status-ready);
+  background: var(--status-ready-bg);
+}
+
+.column-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+}
+
+.column-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* --- Kitchen Order Card --- */
+.kitchen-order {
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  transition: all var(--transition-normal);
+  animation: slideUp 0.4s ease both;
+}
+
+.kitchen-order:hover {
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--shadow-md);
+}
+
+/* New order pulse */
+.kitchen-order.new-pulse {
+  animation: slideUp 0.4s ease both, pulseRed 1.5s infinite 0.4s;
+  border-color: var(--status-new);
+}
+
+.kitchen-order-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
+.kitchen-order-id {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--brand-light);
+}
+
+.kitchen-order-table {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  background: var(--brand-glow);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-full);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--brand-light);
+}
+
+/* Order Items */
+.kitchen-order-items {
+  margin-bottom: var(--space-md);
+}
+
+.kitchen-order-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(200, 151, 62, 0.06);
+  font-size: 0.95rem;
+}
+
+.kitchen-order-item:last-child {
+  border-bottom: none;
+}
+
+.kitchen-order-item-qty {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--brand-primary);
+  flex-shrink: 0;
+}
+
+.kitchen-order-item-name {
+  flex: 1;
+}
+
+/* Notes */
+.kitchen-order-notes {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--status-process-bg);
+  border: 1px solid rgba(255, 167, 38, 0.2);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  color: var(--status-process);
+  margin-bottom: var(--space-md);
+}
+
+.kitchen-order-notes::before {
+  content: '📝 ';
+}
+
+/* Footer with timer and action */
+.kitchen-order-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--glass-border);
+  gap: var(--space-sm);
+}
+
+.kitchen-order-timer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-family: 'Outfit', sans-serif;
+}
+
+.timer-icon {
+  font-size: 1rem;
+}
+
+.kitchen-order-waiter {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* Action Buttons */
+.kitchen-order-actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+/* Column Empty State */
+.column-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2xl);
+  color: var(--text-muted);
+  text-align: center;
+  gap: var(--space-sm);
+  opacity: 0.6;
+}
+
+.column-empty-icon {
+  font-size: 2.5rem;
+}
+
+.column-empty-text {
+  font-size: 0.85rem;
+}
+
+/* --- Timer color changes based on elapsed time --- */
+.timer-warning {
+  color: var(--status-process) !important;
+}
+
+.timer-danger {
+  color: var(--status-new) !important;
+  font-weight: 600;
+}
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+  .kitchen-board {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .kitchen-column:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .kitchen-topbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: var(--space-sm) var(--space-md);
+    gap: var(--space-sm);
+  }
+
+  .kitchen-stats {
+    gap: var(--space-md);
+  }
+
+  .kitchen-stat-count {
+    font-size: 1.2rem;
+  }
+
+  .kitchen-board {
+    margin-top: 110px;
+    height: calc(100vh - 110px);
+    grid-template-columns: 1fr;
+  }
+
+  .kitchen-column {
+    border-right: none;
+    border-bottom: 1px solid var(--glass-border);
+    max-height: 50vh;
+  }
+
+  .kitchen-order {
+    padding: var(--space-md);
+  }
+
+  .kitchen-order-id {
+    font-size: 1rem;
+  }
+}

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Avorni Coffee — Admin & Kasir Dashboard">
+  <title>Admin — Avorni Coffee</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>👑</text></svg>">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-logo">☕</span>
+      <div class="sidebar-brand">
+        <span class="brand-name">Avorni</span>
+        <span class="brand-sub">Coffee POS</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-page="dashboard" id="nav-dashboard">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        <span>Dashboard</span>
+      </button>
+      <button class="nav-item" data-page="menu" id="nav-menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19h16M4 15h16M4 11h16M4 7h16"/></svg>
+        <span>Kelola Menu</span>
+      </button>
+      <button class="nav-item" data-page="payment" id="nav-payment">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg>
+        <span>Pembayaran</span>
+        <span class="nav-badge hidden" id="payment-badge">0</span>
+      </button>
+      <button class="nav-item" data-page="history" id="nav-history">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>Riwayat Transaksi</span>
+      </button>
+      <button class="nav-item" data-page="users" id="nav-users">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        <span>Pengguna</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar">👑</div>
+        <div class="sidebar-user-info">
+          <span class="sidebar-user-name" id="admin-name">Admin</span>
+          <span class="sidebar-user-role">Administrator</span>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm w-full" id="logout-btn" style="margin-top: 8px;">
+        Keluar
+      </button>
+    </div>
+  </aside>
+
+  <!-- Mobile Top Bar -->
+  <header class="mobile-topbar" id="mobile-topbar">
+    <button class="hamburger" id="hamburger-btn">☰</button>
+    <span class="mobile-title">Avorni Admin</span>
+    <button class="btn btn-ghost btn-sm" id="mobile-logout-btn">Keluar</button>
+  </header>
+
+  <!-- Main Content -->
+  <div class="main-wrapper">
+
+    <!-- ===== PAGE: Dashboard ===== -->
+    <section class="page active" id="page-dashboard">
+      <div class="page-header">
+        <h1>Dashboard</h1>
+        <span class="page-date" id="today-date"></span>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card stat-revenue">
+          <div class="stat-icon">💰</div>
+          <div class="stat-info">
+            <div class="stat-label">Pendapatan Hari Ini</div>
+            <div class="stat-value" id="stat-revenue">Rp 0</div>
+          </div>
+        </div>
+        <div class="stat-card stat-transactions">
+          <div class="stat-icon">📋</div>
+          <div class="stat-info">
+            <div class="stat-label">Total Transaksi</div>
+            <div class="stat-value" id="stat-transactions">0</div>
+          </div>
+        </div>
+        <div class="stat-card stat-cash">
+          <div class="stat-icon">💵</div>
+          <div class="stat-info">
+            <div class="stat-label">Tunai</div>
+            <div class="stat-value" id="stat-cash">Rp 0</div>
+          </div>
+        </div>
+        <div class="stat-card stat-qris">
+          <div class="stat-icon">📱</div>
+          <div class="stat-info">
+            <div class="stat-label">QRIS</div>
+            <div class="stat-value" id="stat-qris">Rp 0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Revenue Chart -->
+      <div class="section-header mt-lg">
+        <h2>Grafik Pendapatan (7 Hari Terakhir)</h2>
+      </div>
+      <div class="chart-container" style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 24px; height: 300px;">
+        <canvas id="revenueChart"></canvas>
+      </div>
+
+      <!-- Active Orders Overview -->
+      <div class="section-header mt-lg">
+        <h2>Pesanan Aktif</h2>
+      </div>
+      <div class="active-orders-grid" id="dashboard-active-orders">
+        <div class="empty-state">
+          <div class="empty-state-icon">✅</div>
+          <div class="empty-state-text">Tidak ada pesanan aktif</div>
+        </div>
+      </div>
+
+      <!-- Recent Transactions -->
+      <div class="section-header mt-lg">
+        <h2>Transaksi Terakhir</h2>
+      </div>
+      <div class="table-wrapper" id="recent-transactions-table">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>No. Order</th>
+              <th>Meja</th>
+              <th>Total</th>
+              <th>Bayar</th>
+              <th>Waktu</th>
+            </tr>
+          </thead>
+          <tbody id="recent-transactions-body">
+            <tr><td colspan="5" class="text-center text-muted" style="padding:32px;">Belum ada transaksi hari ini</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== PAGE: Menu Management ===== -->
+    <section class="page" id="page-menu">
+      <div class="page-header">
+        <h1>Kelola Menu</h1>
+        <button class="btn btn-primary" id="add-menu-btn">
+          + Tambah Menu
+        </button>
+      </div>
+
+      <!-- Category Filter -->
+      <div class="menu-filters">
+        <button class="filter-btn active" data-cat="all">Semua</button>
+        <button class="filter-btn" data-cat="kopi">☕ Kopi</button>
+        <button class="filter-btn" data-cat="non-kopi">🍵 Non-Kopi</button>
+        <button class="filter-btn" data-cat="makanan">🍽️ Makanan</button>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="table" id="menu-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Nama</th>
+              <th>Kategori</th>
+              <th>Harga</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="menu-table-body">
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== PAGE: Payment ===== -->
+    <section class="page" id="page-payment">
+      <div class="page-header">
+        <h1>Pembayaran</h1>
+        <span class="text-muted text-sm">Pesanan yang siap untuk dibayar</span>
+      </div>
+      <div class="payment-grid" id="payment-grid">
+        <div class="empty-state">
+          <div class="empty-state-icon">💳</div>
+          <div class="empty-state-text">Tidak ada pesanan yang perlu dibayar</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PAGE: Transaction History ===== -->
+    <section class="page" id="page-history">
+      <div class="page-header">
+        <h1>Riwayat Transaksi</h1>
+        <div class="flex items-center gap-md">
+          <input type="date" class="form-input" id="history-date" style="width: 180px;">
+        </div>
+      </div>
+      <div class="history-summary" id="history-summary">
+        <div class="history-stat">
+          <span class="history-stat-label">Total Transaksi</span>
+          <span class="history-stat-value" id="history-count">0</span>
+        </div>
+        <div class="history-stat">
+          <span class="history-stat-label">Total Pendapatan</span>
+          <span class="history-stat-value" id="history-revenue">Rp 0</span>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>No. Order</th>
+              <th>Meja</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Metode</th>
+              <th>Dibayar</th>
+              <th>Kembalian</th>
+              <th>Waktu</th>
+            </tr>
+          </thead>
+          <tbody id="history-table-body">
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== PAGE: User Management ===== -->
+    <section class="page" id="page-users">
+      <div class="page-header">
+        <h1>Manajemen Pengguna</h1>
+        <button class="btn btn-primary" id="add-user-btn">
+          + Tambah User
+        </button>
+      </div>
+      <div class="table-wrapper">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Nama</th>
+              <th>Username</th>
+              <th>Role</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="users-table-body">
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== MODAL: Menu Form ===== -->
+  <div class="modal-overlay" id="modal-menu">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="menu-modal-title">Tambah Menu</h2>
+        <button class="modal-close" data-close="modal-menu">✕</button>
+      </div>
+      <form class="modal-body" id="menu-form">
+        <div class="form-group">
+          <label class="form-label" for="menu-name">Nama Menu</label>
+          <input type="text" id="menu-name" class="form-input" placeholder="Contoh: Cappuccino" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="menu-category">Kategori</label>
+          <select id="menu-category" class="form-select" required>
+            <option value="kopi">☕ Kopi</option>
+            <option value="non-kopi">🍵 Non-Kopi</option>
+            <option value="makanan">🍽️ Makanan</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="menu-price">Harga (Rp)</label>
+          <input type="number" id="menu-price" class="form-input" placeholder="Contoh: 28000" required min="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="menu-image">Foto Menu</label>
+          <input type="file" id="menu-image" class="form-input" accept="image/*">
+        </div>
+        <input type="hidden" id="menu-edit-id">
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modal-menu">Batal</button>
+          <button type="submit" class="btn btn-primary" id="menu-submit-btn">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: Payment ===== -->
+  <div class="modal-overlay" id="modal-payment">
+    <div class="modal" style="max-width: 520px;">
+      <div class="modal-header">
+        <h2>Proses Pembayaran</h2>
+        <button class="modal-close" data-close="modal-payment">✕</button>
+      </div>
+      <div class="modal-body" id="payment-modal-body">
+        <!-- Filled dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: User Form ===== -->
+  <div class="modal-overlay" id="modal-user">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="user-modal-title">Tambah User</h2>
+        <button class="modal-close" data-close="modal-user">✕</button>
+      </div>
+      <form class="modal-body" id="user-form">
+        <div class="form-group">
+          <label class="form-label" for="user-fullname">Nama Lengkap</label>
+          <input type="text" id="user-fullname" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="user-username">Username</label>
+          <input type="text" id="user-username" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="user-password">Password</label>
+          <input type="text" id="user-password" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="user-role">Role</label>
+          <select id="user-role" class="form-select" required>
+            <option value="admin">👑 Admin / Kasir</option>
+            <option value="dapur">🍳 Dapur</option>
+            <option value="pelayan">🧑‍🍳 Pelayan</option>
+          </select>
+        </div>
+        <input type="hidden" id="user-edit-id">
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modal-user">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: Receipt ===== -->
+  <div class="modal-overlay" id="modal-receipt">
+    <div class="modal" style="max-width: 380px;">
+      <div class="modal-header">
+        <h2>🧾 Struk Pembayaran</h2>
+        <button class="modal-close" data-close="modal-receipt">✕</button>
+      </div>
+      <div class="receipt-content" id="receipt-content">
+        <!-- Filled dynamically -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close="modal-receipt">Tutup</button>
+        <button class="btn btn-primary" id="print-receipt-btn">🖨️ Cetak</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/admin.js?v=2"></script>
+</body>
+</html>

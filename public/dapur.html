@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Avorni Coffee — Kitchen Display System">
+  <title>Dapur — Avorni Coffee</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dapur.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🍳</text></svg>">
+</head>
+<body>
+  <!-- Top Bar -->
+  <header class="kitchen-topbar">
+    <div class="topbar-left">
+      <span class="topbar-logo">🍳</span>
+      <h1 class="topbar-title">Dapur <span>Avorni</span></h1>
+    </div>
+    <div class="topbar-center">
+      <div class="kitchen-stats">
+        <div class="kitchen-stat" id="stat-baru">
+          <span class="kitchen-stat-count">0</span>
+          <span class="kitchen-stat-label">Baru</span>
+        </div>
+        <div class="kitchen-stat" id="stat-proses">
+          <span class="kitchen-stat-count">0</span>
+          <span class="kitchen-stat-label">Proses</span>
+        </div>
+        <div class="kitchen-stat" id="stat-siap">
+          <span class="kitchen-stat-count">0</span>
+          <span class="kitchen-stat-label">Siap</span>
+        </div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="notification-bell" id="notif-bell" title="Notifikasi">
+        🔔
+        <span class="notif-badge hidden" id="notif-badge">0</span>
+      </button>
+      <span class="topbar-user" id="user-name">Staff Dapur</span>
+      <button class="btn btn-ghost btn-sm" id="logout-btn">Keluar</button>
+    </div>
+  </header>
+
+  <!-- Kitchen Board -->
+  <main class="kitchen-board">
+    <!-- Column: Pesanan Baru -->
+    <section class="kitchen-column" id="col-baru">
+      <div class="column-header column-header-new">
+        <h2>🔴 Pesanan Baru</h2>
+        <span class="column-count" id="count-baru">0</span>
+      </div>
+      <div class="column-body" id="body-baru">
+        <!-- Order cards rendered here -->
+      </div>
+    </section>
+
+    <!-- Column: Sedang Diproses -->
+    <section class="kitchen-column" id="col-proses">
+      <div class="column-header column-header-process">
+        <h2>🟡 Sedang Diproses</h2>
+        <span class="column-count" id="count-proses">0</span>
+      </div>
+      <div class="column-body" id="body-proses">
+        <!-- Order cards rendered here -->
+      </div>
+    </section>
+
+    <!-- Column: Siap Disajikan -->
+    <section class="kitchen-column" id="col-siap">
+      <div class="column-header column-header-ready">
+        <h2>🟢 Siap Disajikan</h2>
+        <span class="column-count" id="count-siap">0</span>
+      </div>
+      <div class="column-body" id="body-siap">
+        <!-- Order cards rendered here -->
+      </div>
+    </section>
+  </main>
+
+  <script src="js/utils.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dapur.js?v=2"></script>
+</body>
+</html>
