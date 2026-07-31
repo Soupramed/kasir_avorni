@@ -10,6 +10,7 @@ const MSG_TYPES = {
   ORDER_UPDATED: 'ORDER_UPDATED',
   MENU_UPDATED: 'MENU_UPDATED',
   PAYMENT_PROCESSED: 'PAYMENT_PROCESSED',
+  LAPAK_UPDATED: 'LAPAK_UPDATED',
 };
 
 /* --- API Helper --- */
@@ -42,24 +43,58 @@ class AvorniStore {
     this._connectSSE();
   }
 
-  /* === SSE: Real-time events from server === */
+  /* === REALTIME: Supabase Realtime + Fallback Sync === */
   _connectSSE() {
-    this._eventSource = new EventSource(API_BASE + '/events');
+    this._connectRealtime();
+  }
 
-    this._eventSource.onmessage = (e) => {
+  _connectRealtime() {
+    // If Supabase JS SDK is loaded on window
+    if (window.supabase && window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
       try {
-        const msg = JSON.parse(e.data);
-        if (msg.type === 'CONNECTED') return;
-        const listeners = this._listeners[msg.type] || [];
-        listeners.forEach((fn) => fn(msg.payload));
-      } catch (err) {
-        // ignore parse errors
+        if (!this._supabaseClient) {
+          this._supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+        }
+        const channel = this._supabaseClient.channel('pos-events');
+        channel
+          .on('broadcast', { event: '*' }, (payload) => {
+            const eventType = payload.event || payload.type;
+            const listeners = this._listeners[eventType] || [];
+            listeners.forEach((fn) => fn(payload.payload || payload));
+          })
+          .subscribe();
+      } catch (e) {
+        console.warn('Realtime client fallback to sync:', e);
       }
-    };
+    }
 
-    this._eventSource.onerror = () => {
-      // Auto-reconnect is handled by EventSource
-    };
+    // Fallback SSE event listener if available
+    try {
+      this._eventSource = new EventSource(API_BASE + '/events');
+      this._eventSource.onmessage = (e) => {
+        try {
+          const msg = JSON.parse(e.data);
+          if (msg.type === 'CONNECTED' || msg.type === 'realtime_active') return;
+          const listeners = this._listeners[msg.type] || [];
+          listeners.forEach((fn) => fn(msg.payload));
+        } catch (err) {}
+      };
+    } catch(err) {}
+
+    // Smart background sync interval (3 seconds) to ensure 100% realtime UI consistency
+    setInterval(() => {
+      const activeListeners = Object.keys(this._listeners);
+      if (activeListeners.length > 0) {
+        if (this._listeners[MSG_TYPES.ORDER_CREATED] || this._listeners[MSG_TYPES.ORDER_UPDATED]) {
+          this._triggerListeners(MSG_TYPES.ORDER_UPDATED, null);
+        }
+      }
+    }, 3500);
+  }
+
+  _triggerListeners(type, payload) {
+    const listeners = this._listeners[type] || [];
+    listeners.forEach((fn) => fn(payload));
   }
 
   /**
@@ -189,6 +224,28 @@ class AvorniStore {
 
   async deleteUser(id) {
     return apiFetch('/users/' + id, { method: 'DELETE' });
+  }
+
+  /* === LAPAK === */
+  async getLapak() {
+    return apiFetch('/lapak');
+  }
+
+  async getLapakReport(date) {
+    const query = date ? '?date=' + date : '';
+    return apiFetch('/lapak/report' + query);
+  }
+
+  async addLapak(data) {
+    return apiFetch('/lapak', { method: 'POST', body: data });
+  }
+
+  async updateLapak(id, updates) {
+    return apiFetch('/lapak/' + id, { method: 'PUT', body: updates });
+  }
+
+  async deleteLapak(id) {
+    return apiFetch('/lapak/' + id, { method: 'DELETE' });
   }
 }
 

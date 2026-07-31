@@ -25,6 +25,12 @@
   const notifBadge = document.getElementById('notif-badge');
   const notifBell = document.getElementById('notif-bell');
 
+  // Mobile tab switcher elements
+  const colTabsBaru = document.getElementById('tab-count-baru');
+  const colTabsProses = document.getElementById('tab-count-proses');
+  const colTabsSiap = document.getElementById('tab-count-siap');
+  let activeMobileCol = 'baru';
+
   // --- State ---
   let newOrderCount = 0;
   let timerInterval = null;
@@ -32,6 +38,7 @@
   // --- Initialize ---
   async function init() {
     setupListeners();
+    setupMobileTabs();
     setupBroadcast();
     startTimerUpdates();
     await renderAllColumns();
@@ -61,6 +68,11 @@
       statBaru.textContent = baru.length;
       statProses.textContent = proses.length;
       statSiap.textContent = siap.length;
+
+      // Sync mobile tab counts
+      if (colTabsBaru) colTabsBaru.textContent = baru.length;
+      if (colTabsProses) colTabsProses.textContent = proses.length;
+      if (colTabsSiap) colTabsSiap.textContent = siap.length;
     } catch (err) {
       console.error('Failed to fetch orders:', err);
     }
@@ -70,7 +82,7 @@
     container.innerHTML = '';
 
     if (orders.length === 0) {
-      const emptyIcons = { baru: '📭', proses: '⏳', siap: '✅' };
+      const emptyIcons = { baru: getIcon('inbox'), proses: getIcon('clock'), siap: getIcon('check') };
       const emptyTexts = {
         baru: 'Tidak ada pesanan baru',
         proses: 'Tidak ada pesanan yang sedang diproses',
@@ -100,7 +112,7 @@
     const itemsHtml = order.items.map((item) =>
       `<div class="kitchen-order-item" style="display:flex;align-items:center;gap:8px;">
         <span class="kitchen-order-item-qty">${item.qty}×</span>
-        <span>${item.imageUrl ? `<img src="${item.imageUrl}" style="width:24px;height:24px;border-radius:4px;object-fit:cover;">` : item.emoji}</span>
+        <span>${item.imageUrl ? `<img src="${item.imageUrl}" style="width:24px;height:24px;border-radius:4px;object-fit:cover;">` : getIcon(item.emoji, 'icon-inline')}</span>
         <span class="kitchen-order-item-name">${escapeHtml(item.name)}</span>
       </div>`
     ).join('');
@@ -113,12 +125,12 @@
     // Action buttons based on status
     let actionsHtml = '';
     if (status === 'baru') {
-      actionsHtml = `<button class="btn btn-warning btn-sm action-btn" data-action="proses" data-id="${order.id}">
-        🍳 Proses
+      actionsHtml = `<button class="btn btn-warning btn-sm action-btn" data-action="proses" data-id="${order.id}" style="display:inline-flex;align-items:center;gap:6px;">
+        ${getIcon('chef-hat', 'icon-inline')} Proses
       </button>`;
     } else if (status === 'proses') {
-      actionsHtml = `<button class="btn btn-success btn-sm action-btn" data-action="siap" data-id="${order.id}">
-        ✅ Siap
+      actionsHtml = `<button class="btn btn-success btn-sm action-btn" data-action="siap" data-id="${order.id}" style="display:inline-flex;align-items:center;gap:6px;">
+        ${getIcon('check', 'icon-inline')} Siap
       </button>`;
     } else if (status === 'siap') {
       actionsHtml = `<span class="badge badge-ready">Menunggu disajikan</span>`;
@@ -134,15 +146,15 @@
       <div class="kitchen-order-header">
         <div>
           <div class="kitchen-order-id">${order.orderNumber}</div>
-          <div class="kitchen-order-waiter">👤 ${escapeHtml(order.waiter || 'Pelayan')}</div>
+          <div class="kitchen-order-waiter" style="display:inline-flex;align-items:center;gap:5px;">${getIcon('user', 'icon-inline')} ${escapeHtml(order.waiter || 'Pelayan')}</div>
         </div>
-        <div class="kitchen-order-table">🪑 ${order.tableNo} - ${escapeHtml(order.customerName || 'Tanpa Nama')}</div>
+        <div class="kitchen-order-table" style="display:inline-flex;align-items:center;gap:5px;">${getIcon('table', 'icon-inline')} ${order.tableNo} - ${escapeHtml(order.customerName || 'Tanpa Nama')}</div>
       </div>
       <div class="kitchen-order-items">${itemsHtml}</div>
       ${notesHtml}
       <div class="kitchen-order-footer">
         <div class="kitchen-order-timer ${timerClass}" data-start="${order.createdAt}">
-          <span class="timer-icon">⏱️</span>
+          <span class="timer-icon" style="display:inline-flex;align-items:center;">${getIcon('clock', 'icon-inline')}</span>
           <span class="timer-value">${formatElapsed(order.createdAt)}</span>
         </div>
         <div class="kitchen-order-actions">${actionsHtml}</div>
@@ -169,6 +181,33 @@
     }, 1000);
   }
 
+  // --- Mobile Column Tab Switching ---
+  function setupMobileTabs() {
+    const tabBar = document.getElementById('kitchen-col-tabs');
+    if (!tabBar) return;
+
+    // Set initial active column
+    switchMobileCol('baru');
+
+    tabBar.addEventListener('click', (e) => {
+      const tab = e.target.closest('.kitchen-col-tab');
+      if (!tab) return;
+      switchMobileCol(tab.dataset.col);
+    });
+  }
+
+  function switchMobileCol(col) {
+    activeMobileCol = col;
+    // Update tab active state
+    document.querySelectorAll('.kitchen-col-tab').forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.col === col);
+    });
+    // Show/hide columns
+    document.querySelectorAll('.kitchen-column').forEach((section) => {
+      section.classList.toggle('mobile-active', section.id === 'col-' + col);
+    });
+  }
+
   // --- Action Handlers ---
   async function handleAction(action, orderId) {
     const statusMap = {
@@ -183,8 +222,8 @@
       const order = await store.updateOrderStatus(orderId, newStatus);
       if (order) {
         const messages = {
-          proses: `Pesanan ${order.orderNumber} sedang diproses 🍳`,
-          siap: `Pesanan ${order.orderNumber} siap disajikan! ✅`,
+          proses: `Pesanan ${order.orderNumber} sedang diproses`,
+          siap: `Pesanan ${order.orderNumber} siap disajikan!`,
         };
         showToast(messages[action], action === 'siap' ? 'success' : 'info');
         await renderAllColumns();

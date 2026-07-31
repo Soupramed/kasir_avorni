@@ -6,15 +6,16 @@
   <meta name="description" content="Avorni Coffee — Admin & Kasir Dashboard">
   <title>Admin — Avorni Coffee</title>
   <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/pelayan.css">
   <link rel="stylesheet" href="css/admin.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>👑</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c8973e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10 2v2'/><path d='M14 2v2'/><path d='M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h12Z'/><path d='M6 2v2'/><path d='M17 12h1a3 3 0 0 1 0 6h-1'/></svg>">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <span class="sidebar-logo">☕</span>
+      <span class="sidebar-logo" style="color: var(--brand-primary); display: inline-flex; align-items: center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h12Z"/><path d="M6 2v2"/><path d="M17 12h1a3 3 0 0 1 0 6h-1"/></svg></span>
       <div class="sidebar-brand">
         <span class="brand-name">Avorni</span>
         <span class="brand-sub">Coffee POS</span>
@@ -26,9 +27,17 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
         <span>Dashboard</span>
       </button>
+      <button class="nav-item" data-page="order" id="nav-order">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <span>Buat Pesanan</span>
+      </button>
       <button class="nav-item" data-page="menu" id="nav-menu">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19h16M4 15h16M4 11h16M4 7h16"/></svg>
         <span>Kelola Menu</span>
+      </button>
+      <button class="nav-item" data-page="lapak" id="nav-lapak">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9M3 9h18M8 14h8"/></svg>
+        <span>Lapak</span>
       </button>
       <button class="nav-item" data-page="payment" id="nav-payment">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg>
@@ -47,7 +56,7 @@
 
     <div class="sidebar-footer">
       <div class="sidebar-user">
-        <div class="sidebar-user-avatar">👑</div>
+        <div class="sidebar-user-avatar" style="color: var(--brand-primary); display: inline-flex; align-items: center; justify-content: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14a1 1 0 0 0 1-1v-1H4v1a1 1 0 0 0 1 1z"/></svg></div>
         <div class="sidebar-user-info">
           <span class="sidebar-user-name" id="admin-name">Admin</span>
           <span class="sidebar-user-role">Administrator</span>
@@ -66,6 +75,9 @@
     <button class="btn btn-ghost btn-sm" id="mobile-logout-btn">Keluar</button>
   </header>
 
+  <!-- Sidebar Overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
   <!-- Main Content -->
   <div class="main-wrapper">
 
@@ -79,31 +91,56 @@
       <!-- Stats Cards -->
       <div class="stats-grid">
         <div class="stat-card stat-revenue">
-          <div class="stat-icon">💰</div>
+          <div class="stat-icon" style="color: var(--brand-primary); display: inline-flex; align-items: center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
           <div class="stat-info">
             <div class="stat-label">Pendapatan Hari Ini</div>
             <div class="stat-value" id="stat-revenue">Rp 0</div>
           </div>
         </div>
         <div class="stat-card stat-transactions">
-          <div class="stat-icon">📋</div>
+          <div class="stat-icon" style="color: var(--brand-primary); display: inline-flex; align-items: center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg></div>
           <div class="stat-info">
             <div class="stat-label">Total Transaksi</div>
             <div class="stat-value" id="stat-transactions">0</div>
           </div>
         </div>
         <div class="stat-card stat-cash">
-          <div class="stat-icon">💵</div>
+          <div class="stat-icon" style="color: var(--brand-primary); display: inline-flex; align-items: center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg></div>
           <div class="stat-info">
             <div class="stat-label">Tunai</div>
             <div class="stat-value" id="stat-cash">Rp 0</div>
           </div>
         </div>
         <div class="stat-card stat-qris">
-          <div class="stat-icon">📱</div>
+          <div class="stat-icon" style="color: var(--brand-primary); display: inline-flex; align-items: center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
           <div class="stat-info">
             <div class="stat-label">QRIS</div>
             <div class="stat-value" id="stat-qris">Rp 0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Status Stats -->
+      <div class="stats-grid mt-md">
+        <div class="stat-card stat-active">
+          <div class="stat-icon" style="color: var(--brand-primary); display: inline-flex; align-items: center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+          <div class="stat-info">
+            <div class="stat-label">Pesanan Aktif</div>
+            <div class="stat-value" id="stat-active-orders">0</div>
+          </div>
+        </div>
+        <div class="stat-card stat-waiting">
+          <div class="stat-icon" style="color: var(--brand-primary); display: inline-flex; align-items: center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg></div>
+          <div class="stat-info">
+            <div class="stat-label">Menunggu Bayar</div>
+            <div class="stat-value" id="stat-waiting-payment">0</div>
+          </div>
+        </div>
+        <div class="stat-card stat-processing">
+          <div class="stat-icon" style="color: var(--brand-primary); display: inline-flex; align-items: center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div class="stat-info">
+            <div class="stat-label">Sedang Diproses</div>
+            <div class="stat-value" id="stat-processing-orders">0</div>
           </div>
         </div>
       </div>
@@ -112,8 +149,34 @@
       <div class="section-header mt-lg">
         <h2>Grafik Pendapatan (7 Hari Terakhir)</h2>
       </div>
-      <div class="chart-container" style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 24px; height: 300px;">
+      <div class="chart-container">
         <canvas id="revenueChart"></canvas>
+      </div>
+
+      <!-- Lapak Revenue & Tax Report -->
+      <div class="section-header mt-lg">
+        <h2>Laporan Per Lapak (Hari Ini)</h2>
+        <input type="date" class="form-input" id="lapak-report-date" style="width: 180px;">
+      </div>
+      <div class="table-wrapper">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Lapak</th>
+              <th>Pemilik</th>
+              <th>Item Terjual</th>
+              <th>Omzet</th>
+              <th>Pajak Terhutang</th>
+            </tr>
+          </thead>
+          <tbody id="lapak-report-body">
+            <tr><td colspan="5" class="text-center text-muted" style="padding:32px;">Belum ada lapak</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="lapak-tax-total" id="lapak-tax-total">
+        <span>Total Pajak Semua Lapak</span>
+        <span id="lapak-tax-total-value">Rp 0</span>
       </div>
 
       <!-- Active Orders Overview -->
@@ -122,7 +185,7 @@
       </div>
       <div class="active-orders-grid" id="dashboard-active-orders">
         <div class="empty-state">
-          <div class="empty-state-icon">✅</div>
+          <div class="empty-state-icon" style="color: var(--brand-primary); display: inline-flex; align-items: center;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
           <div class="empty-state-text">Tidak ada pesanan aktif</div>
         </div>
       </div>
@@ -149,6 +212,96 @@
       </div>
     </section>
 
+    <!-- ===== PAGE: Buat Pesanan (identik dengan Pelayan) ===== -->
+    <section class="page" id="page-order">
+      <div class="order-layout">
+        <!-- Menu Area -->
+        <section class="menu-area">
+          <!-- Category Tabs -->
+          <div class="category-tabs">
+            <button class="cat-btn active" data-cat="kopi" id="order-cat-kopi" style="display: inline-flex; align-items: center; gap: 6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h12Z"/><path d="M6 2v2"/><path d="M17 12h1a3 3 0 0 1 0 6h-1"/></svg> Kopi</button>
+            <button class="cat-btn" data-cat="non-kopi" id="order-cat-nonkopi" style="display: inline-flex; align-items: center; gap: 6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 3.5.6 9.8A7 7 0 0 1 11 20z"/><path d="M9 11.3a13.3 13.3 0 0 0-5.7 5.7M12.5 17.5a13.3 13.3 0 0 0 2.8-5.3"/></svg> Non-Kopi</button>
+            <button class="cat-btn" data-cat="makanan" id="order-cat-makanan" style="display: inline-flex; align-items: center; gap: 6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4.6 12.8 1.4-1.4a8.2 8.2 0 0 1 12 0l1.4 1.4c.5.5.5 1.4 0 1.9L18 16.1a1 1 0 0 1-1.4 0l-1-1a3 3 0 0 0-4.2 0l-1 1a1 1 0 0 1-1.4 0l-1.4-1.4c-.5-.5-.5-1.4 0-1.9z"/></svg> Makanan</button>
+          </div>
+          <!-- Menu Grid -->
+          <div class="menu-grid" id="order-menu-grid">
+            <!-- Rendered by JS -->
+          </div>
+        </section>
+
+        <!-- Cart Sidebar -->
+        <aside class="cart-sidebar" id="order-cart-sidebar">
+          <div class="cart-header">
+            <h2 style="display: inline-flex; align-items: center; gap: 8px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> Keranjang</h2>
+            <button class="btn btn-ghost btn-sm" id="order-clear-cart-btn" title="Kosongkan keranjang">Hapus Semua</button>
+          </div>
+
+          <div class="cart-form-row">
+            <div class="cart-form-group">
+              <label class="form-label" for="order-customer-name">Nama Pemesan</label>
+              <input type="text" class="form-input form-input-sm" id="order-customer-name" placeholder="Nama pemesan...">
+            </div>
+            <div class="cart-form-group">
+              <label class="form-label" for="order-table-select">Meja</label>
+              <button class="btn btn-ghost w-full btn-input-sm" id="order-open-floorplan-btn" style="border:1px solid rgba(255,255,255,0.1); justify-content:space-between; padding: 8px 12px; height: 38px;">
+                <span id="order-selected-table-text" style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.8rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Pilih</span>
+                <span style="opacity:0.5; font-size: 0.78rem;">▼</span>
+              </button>
+              <input type="hidden" id="order-table-select-hidden">
+            </div>
+          </div>
+
+          <div class="cart-items" id="order-cart-items">
+            <div class="empty-state" id="order-cart-empty">
+              <div class="empty-state-icon" style="color: var(--brand-primary); display: inline-flex; align-items: center;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
+              <div class="empty-state-text">Keranjang masih kosong. Pilih menu untuk memulai pesanan.</div>
+            </div>
+          </div>
+
+          <div class="cart-notes-compact">
+            <label class="form-label sr-only" for="order-notes">Catatan Pesanan</label>
+            <input type="text" class="form-input form-input-sm" id="order-notes" placeholder="Catatan pesanan (opsional)...">
+          </div>
+
+          <div class="cart-footer">
+            <div class="cart-total">
+              <span>Total</span>
+              <span class="cart-total-price" id="order-cart-total">Rp 0</span>
+            </div>
+            <button class="btn btn-primary btn-lg w-full" id="order-submit-btn" disabled>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+              Kirim Pesanan
+            </button>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Cart Backdrop Overlay (Mobile) -->
+      <div class="cart-overlay" id="order-cart-overlay"></div>
+
+      <!-- Mobile Cart Toggle FAB -->
+      <button class="cart-fab" id="order-cart-fab" style="color: var(--text-primary);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="cart-fab-count hidden" id="order-cart-fab-count">0</span>
+      </button>
+    </section>
+
+    <!-- ===== PAGE: Lapak Management ===== -->
+    <section class="page" id="page-lapak">
+      <div class="page-header">
+        <h1>Manajemen Lapak</h1>
+        <button class="btn btn-primary" id="add-lapak-btn">
+          + Tambah Lapak
+        </button>
+      </div>
+      <div class="lapak-grid" id="lapak-grid">
+        <div class="empty-state">
+          <div class="empty-state-icon" style="color: var(--brand-primary); display: inline-flex; align-items: center;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9M3 9h18M8 14h8"/></svg></div>
+          <div class="empty-state-text">Belum ada lapak. Tambahkan lapak pertama.</div>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== PAGE: Menu Management ===== -->
     <section class="page" id="page-menu">
       <div class="page-header">
@@ -161,9 +314,9 @@
       <!-- Category Filter -->
       <div class="menu-filters">
         <button class="filter-btn active" data-cat="all">Semua</button>
-        <button class="filter-btn" data-cat="kopi">☕ Kopi</button>
-        <button class="filter-btn" data-cat="non-kopi">🍵 Non-Kopi</button>
-        <button class="filter-btn" data-cat="makanan">🍽️ Makanan</button>
+        <button class="filter-btn" data-cat="kopi" style="display: inline-flex; align-items: center; gap: 6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h12Z"/><path d="M6 2v2"/><path d="M17 12h1a3 3 0 0 1 0 6h-1"/></svg> Kopi</button>
+        <button class="filter-btn" data-cat="non-kopi" style="display: inline-flex; align-items: center; gap: 6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 3.5.6 9.8A7 7 0 0 1 11 20z"/><path d="M9 11.3a13.3 13.3 0 0 0-5.7 5.7M12.5 17.5a13.3 13.3 0 0 0 2.8-5.3"/></svg> Non-Kopi</button>
+        <button class="filter-btn" data-cat="makanan" style="display: inline-flex; align-items: center; gap: 6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4.6 12.8 1.4-1.4a8.2 8.2 0 0 1 12 0l1.4 1.4c.5.5.5 1.4 0 1.9L18 16.1a1 1 0 0 1-1.4 0l-1-1a3 3 0 0 0-4.2 0l-1 1a1 1 0 0 1-1.4 0l-1.4-1.4c-.5-.5-.5-1.4 0-1.9z"/></svg> Makanan</button>
       </div>
 
       <div class="table-wrapper">
@@ -192,7 +345,7 @@
       </div>
       <div class="payment-grid" id="payment-grid">
         <div class="empty-state">
-          <div class="empty-state-icon">💳</div>
+          <div class="empty-state-icon" style="color: var(--brand-primary); display: inline-flex; align-items: center;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
           <div class="empty-state-text">Tidak ada pesanan yang perlu dibayar</div>
         </div>
       </div>
@@ -276,14 +429,20 @@
         <div class="form-group">
           <label class="form-label" for="menu-category">Kategori</label>
           <select id="menu-category" class="form-select" required>
-            <option value="kopi">☕ Kopi</option>
-            <option value="non-kopi">🍵 Non-Kopi</option>
-            <option value="makanan">🍽️ Makanan</option>
+            <option value="kopi">Kopi</option>
+            <option value="non-kopi">Non-Kopi</option>
+            <option value="makanan">Makanan</option>
           </select>
         </div>
         <div class="form-group">
           <label class="form-label" for="menu-price">Harga (Rp)</label>
           <input type="number" id="menu-price" class="form-input" placeholder="Contoh: 28000" required min="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="menu-lapak">Lapak (opsional)</label>
+          <select id="menu-lapak" class="form-select">
+            <option value="">— Milik Cafe (bukan lapak) —</option>
+          </select>
         </div>
         <div class="form-group">
           <label class="form-label" for="menu-image">Foto Menu</label>
@@ -334,9 +493,9 @@
         <div class="form-group">
           <label class="form-label" for="user-role">Role</label>
           <select id="user-role" class="form-select" required>
-            <option value="admin">👑 Admin / Kasir</option>
-            <option value="dapur">🍳 Dapur</option>
-            <option value="pelayan">🧑‍🍳 Pelayan</option>
+            <option value="admin">Admin / Kasir</option>
+            <option value="dapur">Dapur</option>
+            <option value="pelayan">Pelayan</option>
           </select>
         </div>
         <input type="hidden" id="user-edit-id">
@@ -352,7 +511,7 @@
   <div class="modal-overlay" id="modal-receipt">
     <div class="modal" style="max-width: 380px;">
       <div class="modal-header">
-        <h2>🧾 Struk Pembayaran</h2>
+        <h2 style="display: inline-flex; align-items: center; gap: 8px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon"><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg> Struk Pembayaran</h2>
         <button class="modal-close" data-close="modal-receipt">✕</button>
       </div>
       <div class="receipt-content" id="receipt-content">
@@ -360,8 +519,84 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" data-close="modal-receipt">Tutup</button>
-        <button class="btn btn-primary" id="print-receipt-btn">🖨️ Cetak</button>
+        <button class="btn btn-primary" id="print-receipt-btn" style="display: inline-flex; align-items: center; gap: 6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Cetak</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: Floor Plan (Buat Pesanan) ===== -->
+  <div class="modal-overlay" id="modal-floorplan">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h2 style="display: inline-flex; align-items: center; gap: 8px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Denah Meja Avorni</h2>
+        <button class="modal-close" data-close="modal-floorplan">✕</button>
+      </div>
+      <div class="modal-body floorplan-body">
+        <div class="floorplan-zone">
+          <div class="floorplan-zone-title">Indoor Area (AC)</div>
+          <div class="floorplan-grid indoor-grid">
+            <button class="floorplan-table table-square" data-table="1"><span class="table-no">1</span></button>
+            <button class="floorplan-table table-square" data-table="2"><span class="table-no">2</span></button>
+            <button class="floorplan-table table-square" data-table="3"><span class="table-no">3</span></button>
+            <button class="floorplan-table table-square" data-table="4"><span class="table-no">4</span></button>
+            <button class="floorplan-table table-round" data-table="5"><span class="table-no">5</span></button>
+            <button class="floorplan-table table-round" data-table="6"><span class="table-no">6</span></button>
+            <button class="floorplan-table table-round" data-table="7"><span class="table-no">7</span></button>
+            <button class="floorplan-table table-round" data-table="8"><span class="table-no">8</span></button>
+          </div>
+        </div>
+        <div class="floorplan-zone">
+          <div class="floorplan-zone-title">Outdoor (Smoking Area)</div>
+          <div class="floorplan-grid outdoor-grid">
+            <button class="floorplan-table table-square" data-table="9"><span class="table-no">9</span></button>
+            <button class="floorplan-table table-square" data-table="10"><span class="table-no">10</span></button>
+            <button class="floorplan-table table-square" data-table="11"><span class="table-no">11</span></button>
+            <button class="floorplan-table table-square" data-table="12"><span class="table-no">12</span></button>
+            <button class="floorplan-table table-round" data-table="13"><span class="table-no">13</span></button>
+            <button class="floorplan-table table-round" data-table="14"><span class="table-no">14</span></button>
+            <button class="floorplan-table table-round" data-table="15"><span class="table-no">15</span></button>
+            <button class="floorplan-table table-round" data-table="16"><span class="table-no">16</span></button>
+          </div>
+        </div>
+        <div class="floorplan-zone">
+          <div class="floorplan-zone-title">Bar / VIP Area</div>
+          <div class="floorplan-grid bar-grid">
+            <button class="floorplan-table table-bar" data-table="17"><span class="table-no">17</span></button>
+            <button class="floorplan-table table-bar" data-table="18"><span class="table-no">18</span></button>
+            <button class="floorplan-table table-bar" data-table="19"><span class="table-no">19</span></button>
+            <button class="floorplan-table table-bar" data-table="20"><span class="table-no">20</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: Lapak Form ===== -->
+  <div class="modal-overlay" id="modal-lapak">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="lapak-modal-title">Tambah Lapak</h2>
+        <button class="modal-close" data-close="modal-lapak">✕</button>
+      </div>
+      <form class="modal-body" id="lapak-form">
+        <div class="form-group">
+          <label class="form-label" for="lapak-name">Nama Lapak</label>
+          <input type="text" id="lapak-name" class="form-input" placeholder="Contoh: Lapak Gorengan Bu Siti" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="lapak-owner">Nama Pemilik</label>
+          <input type="text" id="lapak-owner" class="form-input" placeholder="Contoh: Siti Aminah" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="lapak-tax">Pajak per Item (Rp)</label>
+          <input type="number" id="lapak-tax" class="form-input" placeholder="Contoh: 1000" required min="0">
+        </div>
+        <input type="hidden" id="lapak-edit-id">
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="modal-lapak">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+      </form>
     </div>
   </div>
 

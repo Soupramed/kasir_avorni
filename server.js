@@ -1,5 +1,5 @@
 /* ============================================
-   AVORNI COFFEE POS — Express Server
+   AVORNI COFFEE POS — Local Dev Server / Production Runner
    ============================================ */
 
 const express = require('express');
@@ -9,43 +9,85 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// --- Middleware ---
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from public/
+// Serve static assets from public/
 app.use(express.static(path.join(__dirname, 'public')));
 
-// --- SSE: Server-Sent Events for real-time ---
-const sseClients = new Set();
-
-function broadcastEvent(type, payload) {
-  const data = JSON.stringify({ type, payload, timestamp: Date.now() });
-  for (const client of sseClients) {
-    client.write(`data: ${data}\n\n`);
-  }
+// Serverless Handler wrapper for Express local runner
+function serverless(handlerPath) {
+  return async (req, res) => {
+    try {
+      const handler = require(handlerPath);
+      await handler(req, res);
+    } catch (err) {
+      console.error(`Error in serverless handler (${handlerPath}):`, err);
+      if (!res.headersSent) {
+        res.status(500).json({ error: err.message });
+      }
+    }
+  };
 }
 
-// Make broadcast available to routes
-app.set('broadcast', broadcastEvent);
-app.set('sseClients', sseClients);
+// Route mapping matching Vercel serverless function paths
+app.all('/api/auth/login', serverless('./api/auth/login.js'));
 
-// --- Routes ---
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/menu', require('./routes/menu'));
-app.use('/api/orders', require('./routes/orders'));
-app.use('/api/transactions', require('./routes/transactions'));
-app.use('/api/users', require('./routes/users'));
-app.use('/api/events', require('./routes/events'));
+app.all('/api/menu/available', serverless('./api/menu/available.js'));
+app.all('/api/menu/category/:category', (req, res) => {
+  req.query.category = req.params.category;
+  return serverless('./api/menu/category/[category].js')(req, res);
+});
+app.all('/api/menu/:id', (req, res) => {
+  req.query.id = req.params.id;
+  return serverless('./api/menu/[id].js')(req, res);
+});
+app.all('/api/menu', serverless('./api/menu/index.js'));
 
-// --- Fallback: serve index.html for any non-API route ---
+app.all('/api/orders/active', serverless('./api/orders/active.js'));
+app.all('/api/orders/today', serverless('./api/orders/today.js'));
+app.all('/api/orders/:id/status', (req, res) => {
+  req.query.id = req.params.id;
+  return serverless('./api/orders/[id]/status.js')(req, res);
+});
+app.all('/api/orders/:id', (req, res) => {
+  req.query.id = req.params.id;
+  return serverless('./api/orders/[id].js')(req, res);
+});
+app.all('/api/orders', serverless('./api/orders/index.js'));
+
+app.all('/api/transactions/today', serverless('./api/transactions/today.js'));
+app.all('/api/transactions/summary', serverless('./api/transactions/summary.js'));
+app.all('/api/transactions/chart', serverless('./api/transactions/chart.js'));
+app.all('/api/transactions/pay', serverless('./api/transactions/pay.js'));
+app.all('/api/transactions', serverless('./api/transactions/index.js'));
+
+app.all('/api/users/:id', (req, res) => {
+  req.query.id = req.params.id;
+  return serverless('./api/users/[id].js')(req, res);
+});
+app.all('/api/users', serverless('./api/users/index.js'));
+
+app.all('/api/lapak/report', serverless('./api/lapak/report.js'));
+app.all('/api/lapak/:id', (req, res) => {
+  req.query.id = req.params.id;
+  return serverless('./api/lapak/[id].js')(req, res);
+});
+app.all('/api/lapak', serverless('./api/lapak/index.js'));
+
+app.all('/api/events', serverless('./api/events.js'));
+
+// SPA Fallback
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// --- Start Server ---
-app.listen(PORT, () => {
-  console.log(`\n  ☕ Avorni Coffee POS Server`);
-  console.log(`  🚀 Running at http://localhost:${PORT}`);
-  console.log(`  📂 Serving static files from ./public\n`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`\n  ☕ Avorni Coffee POS Server`);
+    console.log(`  🚀 Running at http://localhost:${PORT}`);
+    console.log(`  📂 Serverless API routes active\n`);
+  });
+}
+
+module.exports = app;

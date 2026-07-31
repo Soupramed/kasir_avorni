@@ -339,9 +339,19 @@
 
 /* --- Responsive --- */
 @media (max-width: 480px) {
+  .login-container {
+    align-items: flex-start;
+    padding: var(--space-md);
+    padding-top: max(var(--space-lg), env(safe-area-inset-top));
+    padding-bottom: max(var(--space-lg), env(safe-area-inset-bottom));
+    min-height: 100svh;
+  }
+
   .login-card {
-    padding: var(--space-xl) var(--space-lg);
+    padding: var(--space-xl) var(--space-md);
     border-radius: var(--radius-lg);
+    margin-top: auto;
+    margin-bottom: auto;
   }
 
   .logo-icon {
@@ -351,4 +361,34 @@
   .logo-text {
     font-size: 1.6rem;
   }
+
+  .role-card {
+    padding: var(--space-sm) var(--space-md);
+    gap: var(--space-sm);
+  }
+
+  .role-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+  }
+
+  .role-name {
+    font-size: 0.9rem;
+  }
+
+  .role-desc {
+    font-size: 0.72rem;
+  }
 }
+
+@media (max-width: 360px) {
+  .role-cards {
+    gap: var(--space-xs);
+  }
+
+  .login-card {
+    padding: var(--space-lg) var(--space-sm);
+  }
+}
+

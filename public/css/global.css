@@ -29,6 +29,27 @@ body {
 }
 
 img, svg { display: block; max-width: 100%; }
+svg.lucide-icon, svg.icon-inline, svg.icon-sm { display: inline-block !important; }
+.lucide-icon {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2;
+  stroke: currentColor;
+  fill: none;
+  display: inline-block;
+  vertical-align: middle;
+}
+.icon-inline {
+  width: 1.2em;
+  height: 1.2em;
+  vertical-align: -0.15em;
+  flex-shrink: 0;
+  stroke: currentColor;
+}
+.icon-sm {
+  width: 16px;
+  height: 16px;
+}
 button, input, select, textarea { font: inherit; color: inherit; }
 a { color: inherit; text-decoration: none; }
 ul, ol { list-style: none; }
@@ -490,6 +511,12 @@ h4 { font-size: 1.1rem; }
   border: 1px solid rgba(102, 187, 106, 0.3);
 }
 
+.badge-delivering {
+  background: rgba(142, 36, 170, 0.15); /* Purple theme for delivered/eating */
+  color: #ba68c8;
+  border: 1px solid rgba(142, 36, 170, 0.3);
+}
+
 .badge-done {
   background: var(--status-done-bg);
   color: var(--status-done);
@@ -745,7 +772,6 @@ h4 { font-size: 1.1rem; }
 /* --- Responsive --- */
 @media (max-width: 768px) {
   :root {
-    --sidebar-width: 0px;
     --topbar-height: 56px;
   }
 
@@ -754,7 +780,7 @@ h4 { font-size: 1.1rem; }
 
   .modal {
     width: 95%;
-    padding: var(--space-lg);
+    max-height: 92vh;
   }
 
   .toast {
@@ -762,3 +788,53 @@ h4 { font-size: 1.1rem; }
     max-width: 90vw;
   }
 }
+
+@media (max-width: 480px) {
+  :root {
+    --space-lg: 16px;
+    --space-xl: 24px;
+    --space-2xl: 32px;
+  }
+  .modal {
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: 95vh;
+    margin: 0;
+  }
+  .modal-overlay {
+    align-items: flex-end;
+  }
+  .btn { min-height: 44px; }
+}
+
+/* Safe area inset support (iPhone notch / home bar) */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .cart-footer,
+  .cart-fab {
+    padding-bottom: calc(var(--space-lg) + env(safe-area-inset-bottom));
+  }
+  .cart-fab {
+    bottom: calc(var(--space-lg) + env(safe-area-inset-bottom));
+  }
+  .kitchen-topbar,
+  .topbar {
+    padding-left: max(var(--space-lg), env(safe-area-inset-left));
+    padding-right: max(var(--space-lg), env(safe-area-inset-right));
+  }
+}
+
+/* Smooth touch scrolling */
+.menu-area,
+.cart-items,
+.column-body,
+.my-orders-grid,
+.modal-body {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+

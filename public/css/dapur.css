@@ -296,7 +296,14 @@
 }
 
 .kitchen-order-notes::before {
-  content: '📝 ';
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 1em;
+  border-radius: 2px;
+  background: var(--status-process);
+  margin-right: 6px;
+  vertical-align: middle;
 }
 
 /* Footer with timer and action */
@@ -364,7 +371,14 @@
   font-weight: 600;
 }
 
+/* --- Mobile Column Tab Switcher --- */
+.kitchen-col-tabs {
+  display: none; /* only shown on mobile via media query */
+}
+
 /* --- Responsive --- */
+
+/* ─── Medium tablet (1024px) ─── */
 @media (max-width: 1024px) {
   .kitchen-board {
     grid-template-columns: 1fr 1fr;
@@ -372,35 +386,103 @@
 
   .kitchen-column:nth-child(3) {
     grid-column: 1 / -1;
+    max-height: 45vh;
   }
 }
 
-@media (max-width: 768px) {
+/* ─── Mobile (< 768px) ─── */
+@media (max-width: 767px) {
+  /* Compact topbar */
   .kitchen-topbar {
-    flex-wrap: wrap;
+    padding: 0 var(--space-md);
     height: auto;
-    padding: var(--space-sm) var(--space-md);
+    min-height: 56px;
+    flex-wrap: nowrap;
     gap: var(--space-sm);
   }
 
-  .kitchen-stats {
-    gap: var(--space-md);
+  .topbar-center {
+    display: none; /* Stats hidden from topbar on mobile — shown in column tabs */
   }
 
-  .kitchen-stat-count {
-    font-size: 1.2rem;
+  .topbar-title span {
+    display: none;
   }
 
-  .kitchen-board {
-    margin-top: 110px;
-    height: calc(100vh - 110px);
-    grid-template-columns: 1fr;
-  }
-
-  .kitchen-column {
-    border-right: none;
+  /* Mobile column tab switcher bar */
+  .kitchen-col-tabs {
+    display: flex;
+    position: fixed;
+    top: 56px;
+    left: 0;
+    right: 0;
+    z-index: 90;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--glass-border);
-    max-height: 50vh;
+    height: 48px;
+  }
+
+  .kitchen-col-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    padding: 0 var(--space-xs);
+  }
+
+  .kitchen-col-tab.active {
+    color: var(--text-primary);
+  }
+
+  .kitchen-col-tab[data-col="baru"].active { border-bottom-color: var(--status-new); }
+  .kitchen-col-tab[data-col="proses"].active { border-bottom-color: var(--status-process); }
+  .kitchen-col-tab[data-col="siap"].active { border-bottom-color: var(--status-ready); }
+
+  .kitchen-col-tab-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    background: var(--bg-elevated);
+    padding: 0 4px;
+  }
+
+  /* Kitchen board: single column layout */
+  .kitchen-board {
+    margin-top: calc(56px + 48px); /* topbar + tab switcher */
+    height: calc(100svh - 56px - 48px);
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+  }
+
+  /* All columns hidden by default on mobile */
+  .kitchen-column {
+    display: none;
+    border-right: none;
+    border-bottom: none;
+    height: 100%;
+    max-height: none;
+    overflow: hidden;
+  }
+
+  /* Active column shown full height */
+  .kitchen-column.mobile-active {
+    display: flex;
   }
 
   .kitchen-order {
@@ -410,4 +492,28 @@
   .kitchen-order-id {
     font-size: 1rem;
   }
+
+  /* Footer: stack timer and action */
+  .kitchen-order-footer {
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
 }
+
+/* ─── Small mobile (< 480px) ─── */
+@media (max-width: 480px) {
+  .kitchen-topbar {
+    padding: 0 var(--space-sm);
+  }
+
+  .kitchen-order-item {
+    font-size: 0.88rem;
+  }
+
+  .kitchen-order-item-qty {
+    width: 24px;
+    height: 24px;
+    font-size: 0.78rem;
+  }
+}
+

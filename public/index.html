@@ -7,7 +7,7 @@
   <title>Avorni Coffee — Login</title>
   <link rel="stylesheet" href="css/global.css">
   <link rel="stylesheet" href="css/login.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>☕</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c8973e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10 2v2'/><path d='M14 2v2'/><path d='M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h12Z'/><path d='M6 2v2'/><path d='M17 12h1a3 3 0 0 1 0 6h-1'/></svg>">
 </head>
 <body>
   <!-- Animated Background -->
@@ -17,12 +17,12 @@
     <div class="bg-glow bg-glow-2"></div>
     <div class="bg-glow bg-glow-3"></div>
     <div class="floating-beans">
-      <span class="bean" style="--x: 10%; --delay: 0s; --duration: 12s;">☕</span>
-      <span class="bean" style="--x: 25%; --delay: 2s; --duration: 15s;">🫘</span>
-      <span class="bean" style="--x: 40%; --delay: 4s; --duration: 10s;">☕</span>
-      <span class="bean" style="--x: 60%; --delay: 1s; --duration: 14s;">🫘</span>
-      <span class="bean" style="--x: 75%; --delay: 3s; --duration: 11s;">☕</span>
-      <span class="bean" style="--x: 90%; --delay: 5s; --duration: 13s;">🫘</span>
+      <span class="bean" style="--x: 10%; --delay: 0s; --duration: 12s; color: var(--brand-primary);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h12Z"/><path d="M6 2v2"/><path d="M17 12h1a3 3 0 0 1 0 6h-1"/></svg></span>
+      <span class="bean" style="--x: 25%; --delay: 2s; --duration: 15s; color: var(--brand-primary);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.15 4.9a6 6 0 0 1 8.95 8.95L13.5 19.5a6 6 0 0 1-8.95-8.95Z"/><path d="M10 6c0 1.5 1.5 3 3.5 3.5s3.5-.5 3.5-2"/></svg></span>
+      <span class="bean" style="--x: 40%; --delay: 4s; --duration: 10s; color: var(--brand-primary);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h12Z"/><path d="M6 2v2"/><path d="M17 12h1a3 3 0 0 1 0 6h-1"/></svg></span>
+      <span class="bean" style="--x: 60%; --delay: 1s; --duration: 14s; color: var(--brand-primary);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.15 4.9a6 6 0 0 1 8.95 8.95L13.5 19.5a6 6 0 0 1-8.95-8.95Z"/><path d="M10 6c0 1.5 1.5 3 3.5 3.5s3.5-.5 3.5-2"/></svg></span>
+      <span class="bean" style="--x: 75%; --delay: 3s; --duration: 11s; color: var(--brand-primary);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h12Z"/><path d="M6 2v2"/><path d="M17 12h1a3 3 0 0 1 0 6h-1"/></svg></span>
+      <span class="bean" style="--x: 90%; --delay: 5s; --duration: 13s; color: var(--brand-primary);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.15 4.9a6 6 0 0 1 8.95 8.95L13.5 19.5a6 6 0 0 1-8.95-8.95Z"/><path d="M10 6c0 1.5 1.5 3 3.5 3.5s3.5-.5 3.5-2"/></svg></span>
     </div>
   </div>
 
@@ -31,7 +31,7 @@
     <div class="login-card animate-scaleIn" id="login-card">
       <!-- Logo -->
       <div class="login-logo">
-        <div class="logo-icon">☕</div>
+        <div class="logo-icon" style="color: var(--brand-primary); display: inline-block;"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h12Z"/><path d="M6 2v2"/><path d="M17 12h1a3 3 0 0 1 0 6h-1"/></svg></div>
         <h1 class="logo-text">Avorni<span>Coffee</span></h1>
         <p class="logo-tagline">Point of Sale System</p>
       </div>
@@ -41,17 +41,17 @@
         <p class="section-label">Masuk sebagai</p>
         <div class="role-cards">
           <button class="role-card" data-role="admin" id="role-admin">
-            <div class="role-icon">👑</div>
+            <div class="role-icon" style="color: var(--brand-primary);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14a1 1 0 0 0 1-1v-1H4v1a1 1 0 0 0 1 1z"/></svg></div>
             <div class="role-name">Kasir & Admin</div>
             <div class="role-desc">Kelola menu, transaksi & pembayaran</div>
           </button>
           <button class="role-card" data-role="dapur" id="role-dapur">
-            <div class="role-icon">🍳</div>
+            <div class="role-icon" style="color: var(--brand-primary);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18V6a4 4 0 0 1 8 0v12"/><path d="M18 18V9a4 4 0 0 0-8 0v9"/><path d="M3 18h18a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1z"/></svg></div>
             <div class="role-name">Dapur</div>
             <div class="role-desc">Terima & proses pesanan masuk</div>
           </button>
           <button class="role-card" data-role="pelayan" id="role-pelayan">
-            <div class="role-icon">🧑‍🍳</div>
+            <div class="role-icon" style="color: var(--brand-primary);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
             <div class="role-name">Pelayan</div>
             <div class="role-desc">Ambil pesanan pelanggan</div>
           </button>
@@ -66,7 +66,7 @@
         </button>
 
         <div class="selected-role" id="selected-role-display">
-          <span class="selected-role-icon" id="selected-icon">👑</span>
+          <span class="selected-role-icon" id="selected-icon" style="color: var(--brand-primary); display: inline-flex; align-items: center; justify-content: center;"></span>
           <span class="selected-role-name" id="selected-name">Kasir & Admin</span>
         </div>
 
@@ -125,7 +125,7 @@
         selectedRole = card.dataset.role;
 
         // Update display
-        document.getElementById('selected-icon').textContent = card.querySelector('.role-icon').textContent;
+        document.getElementById('selected-icon').innerHTML = card.querySelector('.role-icon').innerHTML;
         document.getElementById('selected-name').textContent = card.querySelector('.role-name').textContent;
 
         // Auto-fill username based on role

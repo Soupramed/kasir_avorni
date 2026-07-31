@@ -37,6 +37,28 @@
   const cartFab = document.getElementById('cart-fab');
   const cartFabCount = document.getElementById('cart-fab-count');
   const cartSidebar = document.getElementById('cart-sidebar');
+  const cartOverlay = document.getElementById('cart-overlay');
+
+  // --- Cart Bottom Sheet helpers ---
+  function openCart() {
+    cartSidebar.classList.add('open');
+    if (cartFab) cartFab.classList.add('cart-open');
+    if (cartOverlay) {
+      cartOverlay.style.display = 'block';
+      requestAnimationFrame(() => cartOverlay.classList.add('active'));
+    }
+    document.body.style.overflow = 'hidden';
+  }
+  function closeCart() {
+    cartSidebar.classList.remove('open');
+    if (cartFab) cartFab.classList.remove('cart-open');
+    if (cartOverlay) {
+      cartOverlay.classList.remove('active');
+      setTimeout(() => { cartOverlay.style.display = 'none'; }, 400);
+    }
+    document.body.style.overflow = '';
+  }
+  function isMobile() { return window.innerWidth <= 767; }
 
   // --- Initialize ---
   async function init() {
@@ -61,7 +83,7 @@
       if (items.length === 0) {
         menuGrid.innerHTML = `
           <div class="empty-state" style="grid-column: 1/-1;">
-            <div class="empty-state-icon">📭</div>
+            <div class="empty-state-icon">${getIcon('inbox', 'lucide-icon')}</div>
             <div class="empty-state-text">Tidak ada item di kategori ini</div>
           </div>`;
         return;
@@ -85,7 +107,7 @@
         }
 
         card.innerHTML = `
-          <div class="menu-item-emoji">${item.imageUrl ? `<img src="${item.imageUrl}" alt="${escapeHtml(item.name)}">` : item.emoji}</div>
+          <div class="menu-item-emoji">${item.imageUrl ? `<img src="${item.imageUrl}" alt="${escapeHtml(item.name)}">` : getIcon(item.emoji)}</div>
           <div class="menu-item-name">${escapeHtml(item.name)}</div>
           <div class="menu-item-price">${formatCurrency(item.price)}</div>
           ${qtyHtml}`;
@@ -119,7 +141,7 @@
       console.error('Failed to load menu:', err);
       menuGrid.innerHTML = `
         <div class="empty-state" style="grid-column: 1/-1;">
-          <div class="empty-state-icon">⚠️</div>
+          <div class="empty-state-icon">${getIcon('warning', 'lucide-icon')}</div>
           <div class="empty-state-text">Gagal memuat menu. Coba refresh halaman.</div>
         </div>`;
     }
@@ -191,7 +213,7 @@
       }
 
       card.innerHTML = `
-        <div class="menu-item-emoji">${item.imageUrl ? `<img src="${item.imageUrl}" alt="${escapeHtml(item.name)}">` : item.emoji}</div>
+        <div class="menu-item-emoji">${item.imageUrl ? `<img src="${item.imageUrl}" alt="${escapeHtml(item.name)}">` : getIcon(item.emoji)}</div>
         <div class="menu-item-name">${escapeHtml(item.name)}</div>
         <div class="menu-item-price">${formatCurrency(item.price)}</div>
         ${qtyHtml}`;
@@ -224,7 +246,8 @@
   function renderCart() {
     const hasItems = cart.length > 0;
     cartEmpty.style.display = hasItems ? 'none' : 'flex';
-    submitBtn.disabled = !hasItems || !tableSelectHidden.value;
+    // Only disable when cart is truly empty — nama & meja validated at submit time
+    submitBtn.disabled = !hasItems;
 
     if (!hasItems) {
       // Keep the empty state but clear cart item elements
@@ -245,7 +268,7 @@
       const el = document.createElement('div');
       el.className = 'cart-item';
       el.innerHTML = `
-        <span class="cart-item-emoji">${item.imageUrl ? `<img src="${item.imageUrl}" alt="${escapeHtml(item.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">` : item.emoji}</span>
+        <span class="cart-item-emoji">${item.imageUrl ? `<img src="${item.imageUrl}" alt="${escapeHtml(item.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">` : getIcon(item.emoji, 'icon-inline')}</span>
         <div class="cart-item-info">
           <div class="cart-item-name">${escapeHtml(item.name)}</div>
           <div class="cart-item-price">${formatCurrency(item.price)}</div>
@@ -285,24 +308,69 @@
     cartFabCount.classList.toggle('hidden', count === 0);
   }
 
+  // --- Cart Inline Validation ---
+  /**
+   * Validates all cart fields. Highlights bad fields and shakes submit button.
+   * Returns true if valid, false if not.
+   */
+  function validateCart() {
+    const customerNameInput = document.getElementById('customer-name');
+    const fieldCustomer = document.getElementById('field-customer-name');
+    const fieldTable = document.getElementById('field-table-select');
+    const errCart = document.getElementById('err-cart-empty');
+    let valid = true;
+
+    // 1. Cart must have items
+    if (cart.length === 0) {
+      cartItems.classList.add('cart-error');
+      if (errCart) errCart.style.display = 'flex';
+      valid = false;
+    } else {
+      cartItems.classList.remove('cart-error');
+      if (errCart) errCart.style.display = 'none';
+    }
+
+    // 2. Customer name required
+    const name = customerNameInput ? customerNameInput.value.trim() : '';
+    if (!name) {
+      fieldCustomer && fieldCustomer.classList.add('field-error');
+      valid = false;
+    } else {
+      fieldCustomer && fieldCustomer.classList.remove('field-error');
+    }
+
+    // 3. Table required
+    if (!tableSelectHidden.value) {
+      fieldTable && fieldTable.classList.add('field-error');
+      valid = false;
+    } else {
+      fieldTable && fieldTable.classList.remove('field-error');
+    }
+
+    // Shake the submit button on error
+    if (!valid) {
+      submitBtn.classList.remove('btn-shake');
+      void submitBtn.offsetWidth; // reflow to restart animation
+      submitBtn.classList.add('btn-shake');
+      submitBtn.addEventListener('animationend', () => submitBtn.classList.remove('btn-shake'), { once: true });
+    }
+
+    return valid;
+  }
+
+  /** Remove validation state from a field when user starts fixing it */
+  function clearFieldError(fieldId) {
+    const el = document.getElementById(fieldId);
+    if (el) el.classList.remove('field-error');
+  }
+
     // --- Submit Order ---
   async function submitOrder() {
+    // Run inline validation first — shows visual errors on bad fields
+    if (!validateCart()) return;
+
     const customerNameInput = document.getElementById('customer-name');
     const customerName = customerNameInput ? customerNameInput.value.trim() : '';
-
-    if (!customerName) {
-      showToast('Nama Pemesan wajib diisi!', 'warning');
-      if (customerNameInput) customerNameInput.focus();
-      return;
-    }
-    if (cart.length === 0) {
-      showToast('Keranjang masih kosong!', 'warning');
-      return;
-    }
-    if (!tableSelectHidden.value) {
-      showToast('Pilih meja terlebih dahulu', 'warning');
-      return;
-    }
 
     try {
       submitBtn.disabled = true;
@@ -323,7 +391,7 @@
        cart = [];
       document.getElementById('customer-name').value = '';
       tableSelectHidden.value = '';
-      selectedTableText.textContent = '📍 Pilih Meja (Denah)';
+      selectedTableText.innerHTML = `<span style="display:inline-flex;align-items:center;gap:4px;">${getIcon('table', 'icon-inline')} Pilih</span>`;
       orderNotes.value = '';
       clearCart();
       
@@ -358,7 +426,7 @@
       if (orders.length === 0) {
         myOrdersGrid.innerHTML = `
           <div class="empty-state" style="grid-column: 1/-1;">
-            <div class="empty-state-icon">📋</div>
+            <div class="empty-state-icon">${getIcon('clipboard', 'lucide-icon')}</div>
             <div class="empty-state-text">Tidak ada pesanan aktif</div>
           </div>`;
         return;
@@ -373,7 +441,8 @@
         const statusLabels = {
           baru: 'Baru',
           proses: 'Diproses',
-          siap: '✅ Siap Disajikan',
+          siap: 'Siap Diantar',
+          diantar: 'Makan / Belum Bayar',
           selesai: 'Selesai',
         };
 
@@ -381,34 +450,47 @@
           baru: 'badge-new',
           proses: 'badge-process',
           siap: 'badge-ready',
+          diantar: 'badge-delivering',
           selesai: 'badge-done',
         };
 
         const itemsHtml = order.items.map((item) =>
           `<div class="order-card-item">
-            <span>${item.emoji} ${escapeHtml(item.name)} × ${item.qty}</span>
+            <span style="display:inline-flex;align-items:center;gap:6px;">${getIcon(item.emoji, 'icon-inline')} ${escapeHtml(item.name)} × ${item.qty}</span>
             <span>${formatCurrency(item.price * item.qty)}</span>
           </div>`
         ).join('');
 
         const notesHtml = order.notes
-          ? `<div class="order-card-notes">📝 ${escapeHtml(order.notes)}</div>`
+          ? `<div class="order-card-notes">Catatan: ${escapeHtml(order.notes)}</div>`
+          : '';
+
+        const actionHtml = order.status === 'siap' 
+          ? `<div class="order-card-actions" style="margin-top: 12px; border-top: 1px dashed var(--glass-border); padding-top: 12px;">
+              <button class="btn btn-warning btn-sm btn-antar w-full" data-id="${order.id}" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;">
+                ${getIcon('truck', 'icon-inline')} Konfirmasi Sudah Diantar
+              </button>
+            </div>`
           : '';
 
         card.innerHTML = `
           <div class="order-card-header">
             <div>
               <div class="order-card-id">${order.orderNumber}</div>
-              <div class="order-card-table">🪑 Meja ${order.tableNo} <span style="opacity: 0.8">(${escapeHtml(order.customerName || 'Tanpa Nama')})</span></div>
+              <div class="order-card-table" style="display:inline-flex;align-items:center;gap:4px;">${getIcon('table', 'icon-inline')} Meja ${order.tableNo} <span style="opacity: 0.8">(${escapeHtml(order.customerName || 'Tanpa Nama')})</span></div>
             </div>
-            <span class="badge ${statusBadgeClass[order.status]}">${statusLabels[order.status]}</span>
+            <span style="display:inline-flex;align-items:center;gap:6px;">
+              ${order.isPaid ? '<span class="badge badge-ready">Lunas</span>' : ''}
+              <span class="badge ${statusBadgeClass[order.status]}">${statusLabels[order.status]}</span>
+            </span>
           </div>
           <div class="order-card-items">${itemsHtml}</div>
           ${notesHtml}
           <div class="order-card-footer">
-            <span class="order-card-time">⏰ ${formatTime(order.createdAt)}</span>
+            <span class="order-card-time" style="display:inline-flex;align-items:center;gap:4px;">${getIcon('clock', 'icon-inline')} ${formatTime(order.createdAt)}</span>
             <span class="order-card-total">${formatCurrency(order.total)}</span>
-          </div>`;
+          </div>
+          ${actionHtml}`;
 
         myOrdersGrid.appendChild(card);
       });
@@ -483,34 +565,18 @@
         floorplanTables.forEach(b => b.classList.remove('active'));
         // Add active to clicked
         btn.classList.add('active');
-        
         const tableNo = btn.dataset.table;
         tableSelectHidden.value = tableNo;
-        selectedTableText.innerHTML = `🪑 Meja ${tableNo} Terpilih`;
+        selectedTableText.innerHTML = `<span style="display:inline-flex;align-items:center;gap:4px;">${getIcon('table', 'icon-inline')} Meja ${tableNo}</span>`;
         
+        // Clear table validation error when table is selected
+        clearFieldError('field-table-select');
+
         // Re-evaluate submit button
-        submitBtn.disabled = cart.length === 0 || !tableSelectHidden.value;
+        submitBtn.disabled = cart.length === 0;
         
         // Close modal
         modalFloorplan.classList.remove('active');
-      });
-    });
-
-    // Navigation and Categories
-    document.querySelectorAll('.tab-btn').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        const tab = e.target.closest('.tab-btn').dataset.tab;
-        switchTab(tab);
-      });
-    });
-
-    // Category filter buttons
-    document.querySelectorAll('.cat-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        currentCategory = btn.dataset.cat;
-        document.querySelectorAll('.cat-btn').forEach((b) => b.classList.remove('active'));
-        btn.classList.add('active');
-        renderMenu();
       });
     });
 
@@ -524,6 +590,39 @@
       showToast('Keranjang dikosongkan', 'info');
     });
 
+    // Auto-clear validation errors when user types customer name
+    const customerNameInput = document.getElementById('customer-name');
+    if (customerNameInput) {
+      customerNameInput.addEventListener('input', () => {
+        if (customerNameInput.value.trim()) clearFieldError('field-customer-name');
+        const errCart = document.getElementById('err-cart-empty');
+        // Re-enable submit button if items present
+        submitBtn.disabled = cart.length === 0;
+      });
+    }
+
+    // Handle 'Konfirmasi Sudah Diantar' click
+    myOrdersGrid.addEventListener('click', async (e) => {
+      const btn = e.target.closest('.btn-antar');
+      if (!btn) return;
+      
+      const orderId = btn.dataset.id;
+      btn.disabled = true;
+      try {
+        const updated = await store.updateOrderStatus(orderId, 'diantar');
+        showToast(
+          updated && updated.status === 'selesai'
+            ? 'Pesanan diantar — pesanan ini sudah lunas, transaksi selesai!'
+            : 'Pesanan dikonfirmasi telah diantar ke meja!',
+          'success'
+        );
+        renderMyOrders();
+      } catch (err) {
+        showToast('Gagal mengupdate status: ' + err.message, 'error');
+        btn.disabled = false;
+      }
+    });
+
     // Status filter buttons
     document.querySelectorAll('.filter-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -534,20 +633,24 @@
       });
     });
 
-    // Mobile cart FAB
+    // Mobile cart FAB — toggle bottom sheet
     cartFab.addEventListener('click', () => {
-      cartSidebar.classList.toggle('open');
-    });
-
-    // Close cart on backdrop click (mobile)
-    document.addEventListener('click', (e) => {
-      if (window.innerWidth <= 900 &&
-          cartSidebar.classList.contains('open') &&
-          !cartSidebar.contains(e.target) &&
-          !cartFab.contains(e.target)) {
-        cartSidebar.classList.remove('open');
+      if (cartSidebar.classList.contains('open')) {
+        closeCart();
+      } else {
+        openCart();
       }
     });
+
+    // Close cart on overlay click (mobile)
+    if (cartOverlay) {
+      cartOverlay.addEventListener('click', () => closeCart());
+    }
+
+    // Close cart on submit / clear
+    submitBtn.addEventListener('click', () => {
+      if (isMobile()) closeCart();
+    }, true);
   }
 
   // --- SSE Broadcast Listeners ---
@@ -560,7 +663,7 @@
       updateActiveCount();
 
       if (order.status === 'siap') {
-        showToast(`Pesanan ${order.orderNumber} (Meja ${order.tableNo}) SIAP disajikan! 🍽️`, 'success');
+        showToast(`Pesanan ${order.orderNumber} (Meja ${order.tableNo}) SIAP disajikan!`, 'success');
         playNotificationSound();
       }
     });

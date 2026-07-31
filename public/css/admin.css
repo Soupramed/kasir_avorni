@@ -200,6 +200,43 @@
   display: block;
 }
 
+/* "Buat Pesanan" reuses pelayan.css's order-layout/menu-area/cart-sidebar/
+   floorplan/menu-item component styles, but its viewport-height math assumes
+   pelayan's own fixed topbar — override it here to fit inside admin's
+   sidebar shell (no topbar on desktop, 56px mobile topbar on small screens). */
+#page-order.active {
+  display: block;
+  margin: calc(-1 * var(--space-xl));
+  height: 100vh;
+}
+
+#page-order .order-layout {
+  height: 100%;
+}
+
+@media (min-width: 768px) {
+  #page-order .cart-sidebar {
+    height: 100%;
+  }
+}
+
+@media (max-width: 1023px) {
+  #page-order.active {
+    margin: calc(-1 * var(--space-lg));
+    height: calc(100svh - 56px);
+  }
+}
+
+@media (max-width: 767px) {
+  #page-order.active {
+    margin: calc(-1 * var(--space-md));
+  }
+
+  #page-order .menu-area {
+    height: 100%;
+  }
+}
+
 .page-header {
   display: flex;
   align-items: center;
@@ -265,6 +302,9 @@
 .stat-transactions .stat-icon { background: rgba(66, 165, 245, 0.15); }
 .stat-cash .stat-icon { background: rgba(102, 187, 106, 0.15); }
 .stat-qris .stat-icon { background: rgba(171, 71, 188, 0.15); }
+.stat-active .stat-icon { background: rgba(16, 185, 129, 0.15); }
+.stat-waiting .stat-icon { background: rgba(239, 68, 68, 0.15); }
+.stat-processing .stat-icon { background: rgba(245, 158, 11, 0.15); }
 
 .stat-label {
   font-size: 0.8rem;
@@ -277,6 +317,17 @@
   font-size: 1.4rem;
   font-weight: 700;
   color: var(--text-primary);
+}
+
+/* --- Revenue Chart --- */
+.chart-container {
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  padding: var(--space-lg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--space-lg);
+  height: 300px;
 }
 
 /* --- Active Orders Grid (Dashboard) --- */
@@ -305,6 +356,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
   margin-bottom: var(--space-sm);
 }
 
@@ -425,7 +478,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--space-md);
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-sm);
 }
 
 .payment-card-id {
@@ -435,12 +490,16 @@
 }
 
 .payment-card-table {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
   padding: 4px 12px;
   background: var(--brand-glow);
   border-radius: var(--radius-full);
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--brand-light);
+  margin-bottom: var(--space-md);
 }
 
 .payment-card-items {
@@ -552,6 +611,92 @@
   color: var(--status-ready);
 }
 
+/* --- Lapak Tax Total Banner --- */
+.lapak-tax-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  margin-bottom: var(--space-lg);
+  background: var(--brand-glow);
+  border: 1px solid rgba(234, 179, 8, 0.3);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.lapak-tax-total #lapak-tax-total-value {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--brand-light);
+}
+
+/* --- Lapak Grid (Lapak Management page) --- */
+.lapak-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-md);
+}
+
+.lapak-card {
+  background: var(--glass-bg-light);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-sm);
+  animation: slideUp 0.4s ease both;
+}
+
+.lapak-card:hover {
+  border-color: var(--glass-border-hover);
+}
+
+.lapak-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-sm);
+}
+
+.lapak-card-name {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.lapak-card-owner {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+}
+
+.lapak-card-tax {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  margin-bottom: var(--space-md);
+}
+
+.lapak-card-tax strong {
+  color: var(--brand-light);
+}
+
+.lapak-card-actions {
+  display: flex;
+  gap: var(--space-xs);
+}
+
 /* --- History Summary --- */
 .history-summary {
   display: flex;
@@ -645,9 +790,12 @@
 }
 
 /* --- Responsive --- */
-@media (max-width: 768px) {
+
+/* ─── Tablet (768–1023px) ─── */
+@media (max-width: 1023px) {
   .sidebar {
     transform: translateX(-100%);
+    z-index: 110;
   }
 
   .sidebar.open {
@@ -661,15 +809,40 @@
   .main-wrapper {
     margin-left: 0;
     margin-top: 56px;
+    padding: var(--space-lg);
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .payment-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .active-orders-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .lapak-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ─── Mobile (< 768px) ─── */
+@media (max-width: 767px) {
+  .main-wrapper {
     padding: var(--space-md);
   }
 
   .stats-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm);
   }
 
   .stat-card {
     padding: var(--space-md);
+    gap: var(--space-md);
   }
 
   .stat-icon {
@@ -689,18 +862,68 @@
   .active-orders-grid {
     grid-template-columns: 1fr;
   }
+
+  .lapak-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Table responsive: horizontal scroll */
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--radius-md);
+  }
+
+  /* History summary stacked */
+  .history-summary {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  /* Page header stacked */
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+
+  .section-header {
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
 }
 
+/* ─── Small mobile (< 480px) ─── */
 @media (max-width: 480px) {
   .stats-grid {
     grid-template-columns: 1fr;
   }
 
-  .page-header {
-    flex-direction: column;
-    align-items: flex-start;
+  .mobile-topbar {
+    padding: 0 var(--space-sm);
+  }
+
+  .stat-card {
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  /* Menu filters: horizontally scrollable */
+  .menu-filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: var(--space-xs);
+  }
+
+  .menu-filters .filter-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .page-header h2 {
+    font-size: 1.1rem;
   }
 }
+
 
 /* --- Print Styles --- */
 @media print {

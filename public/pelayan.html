@@ -7,13 +7,13 @@
   <title>Pelayan — Avorni Coffee</title>
   <link rel="stylesheet" href="css/global.css">
   <link rel="stylesheet" href="css/pelayan.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🧑‍🍳</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c8973e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2'/><circle cx="12" cy="7" r="4"/></svg>">
 </head>
 <body>
   <!-- Top Bar -->
   <header class="topbar" id="topbar">
     <div class="topbar-left">
-      <span class="topbar-logo">☕</span>
+      <span class="topbar-logo" style="color: var(--brand-primary); display: inline-flex; align-items: center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h12Z"/><path d="M6 2v2"/><path d="M17 12h1a3 3 0 0 1 0 6h-1"/></svg></span>
       <h1 class="topbar-title">Avorni <span>Pelayan</span></h1>
     </div>
     <nav class="topbar-nav">
@@ -40,9 +40,9 @@
       <section class="menu-area">
         <!-- Category Tabs -->
         <div class="category-tabs">
-          <button class="cat-btn active" data-cat="kopi" id="cat-kopi">☕ Kopi</button>
-          <button class="cat-btn" data-cat="non-kopi" id="cat-nonkopi">🍵 Non-Kopi</button>
-          <button class="cat-btn" data-cat="makanan" id="cat-makanan">🍽️ Makanan</button>
+          <button class="cat-btn active" data-cat="kopi" id="cat-kopi" style="display: inline-flex; align-items: center; gap: 6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h12Z"/><path d="M6 2v2"/><path d="M17 12h1a3 3 0 0 1 0 6h-1"/></svg> Kopi</button>
+          <button class="cat-btn" data-cat="non-kopi" id="cat-nonkopi" style="display: inline-flex; align-items: center; gap: 6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 3.5.6 9.8A7 7 0 0 1 11 20z"/><path d="M9 11.3a13.3 13.3 0 0 0-5.7 5.7M12.5 17.5a13.3 13.3 0 0 0 2.8-5.3"/></svg> Non-Kopi</button>
+          <button class="cat-btn" data-cat="makanan" id="cat-makanan" style="display: inline-flex; align-items: center; gap: 6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4.6 12.8 1.4-1.4a8.2 8.2 0 0 1 12 0l1.4 1.4c.5.5.5 1.4 0 1.9L18 16.1a1 1 0 0 1-1.4 0l-1-1a3 3 0 0 0-4.2 0l-1 1a1 1 0 0 1-1.4 0l-1.4-1.4c-.5-.5-.5-1.4 0-1.9z"/></svg> Makanan</button>
         </div>
         <!-- Menu Grid -->
         <div class="menu-grid" id="menu-grid">
@@ -53,38 +53,51 @@
       <!-- Cart Sidebar -->
       <aside class="cart-sidebar" id="cart-sidebar">
         <div class="cart-header">
-          <h2>🛒 Keranjang</h2>
+          <h2 style="display: inline-flex; align-items: center; gap: 8px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> Keranjang</h2>
           <button class="btn btn-ghost btn-sm" id="clear-cart-btn" title="Kosongkan keranjang">Hapus Semua</button>
         </div>
 
-        <!-- Customer Name -->
-        <div class="cart-table-select">
-          <label class="form-label" for="customer-name">Nama Pemesan</label>
-          <input type="text" class="form-input" id="customer-name" placeholder="Masukkan nama...">
-        </div>
-
-        <!-- Table Selection -->
-        <div class="cart-table-select">
-          <label class="form-label" for="table-select">Nomor Meja</label>
-          <button class="btn btn-ghost w-full" id="open-floorplan-btn" style="border:1px solid rgba(255,255,255,0.1); justify-content:space-between; padding:var(--space-md);">
-            <span id="selected-table-text">📍 Pilih Meja (Denah)</span>
-            <span style="opacity:0.5;">▼</span>
-          </button>
-          <input type="hidden" id="table-select-hidden">
+        <!-- Customer & Table selection side-by-side -->
+        <div class="cart-form-row">
+          <div class="cart-form-group" id="field-customer-name">
+            <label class="form-label" for="customer-name">Nama Pemesan</label>
+            <input type="text" class="form-input form-input-sm" id="customer-name" placeholder="Nama pemesan..." autocomplete="off">
+            <span class="field-error-msg" id="err-customer-name">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Nama pemesan wajib diisi
+            </span>
+          </div>
+          <div class="cart-form-group" id="field-table-select">
+            <label class="form-label" for="table-select">Meja</label>
+            <button class="btn btn-ghost w-full btn-input-sm" id="open-floorplan-btn" style="border:1px solid rgba(255,255,255,0.1); justify-content:space-between; padding: 8px 12px; height: 38px;">
+              <span id="selected-table-text" style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.8rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Pilih</span>
+              <span style="opacity:0.5; font-size: 0.78rem;">▼</span>
+            </button>
+            <input type="hidden" id="table-select-hidden">
+            <span class="field-error-msg" id="err-table-select">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Pilih meja terlebih dahulu
+            </span>
+          </div>
         </div>
 
         <!-- Cart Items -->
         <div class="cart-items" id="cart-items">
           <div class="empty-state" id="cart-empty">
-            <div class="empty-state-icon">🛒</div>
+            <div class="empty-state-icon" style="color: var(--brand-primary); display: inline-flex; align-items: center;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
             <div class="empty-state-text">Keranjang masih kosong. Pilih menu untuk memulai pesanan.</div>
           </div>
         </div>
+        <!-- Cart empty error message -->
+        <div class="field-error-msg" id="err-cart-empty" style="padding: 0 18px 8px; display:none;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Tambahkan item ke keranjang terlebih dahulu
+        </div>
 
-        <!-- Notes -->
-        <div class="cart-notes">
-          <label class="form-label" for="order-notes">Catatan Pesanan</label>
-          <textarea class="form-textarea" id="order-notes" placeholder="Contoh: Gula dipisah, Extra shot espresso..." rows="2"></textarea>
+        <!-- Compact Notes -->
+        <div class="cart-notes-compact">
+          <label class="form-label sr-only" for="order-notes">Catatan Pesanan</label>
+          <input type="text" class="form-input form-input-sm" id="order-notes" placeholder="Catatan pesanan (opsional)...">
         </div>
 
         <!-- Cart Footer -->
@@ -110,20 +123,24 @@
         <button class="filter-btn active" data-filter="all">Semua</button>
         <button class="filter-btn" data-filter="baru">Baru</button>
         <button class="filter-btn" data-filter="proses">Proses</button>
-        <button class="filter-btn" data-filter="siap">Siap</button>
+        <button class="filter-btn" data-filter="siap">Siap Diantar</button>
+        <button class="filter-btn" data-filter="diantar">Makan / Belum Bayar</button>
       </div>
     </div>
     <div class="my-orders-grid" id="my-orders-grid">
       <div class="empty-state" id="orders-empty">
-        <div class="empty-state-icon">📋</div>
+        <div class="empty-state-icon" style="color: var(--brand-primary); display: inline-flex; align-items: center;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg></div>
         <div class="empty-state-text">Belum ada pesanan. Buat pesanan baru di tab "Buat Pesanan".</div>
       </div>
     </div>
   </section>
 
-  <!-- Mobile Cart Toggle -->
-  <button class="cart-fab" id="cart-fab">
-    🛒
+  <!-- Cart Backdrop Overlay (Mobile) -->
+  <div class="cart-overlay" id="cart-overlay"></div>
+
+  <!-- Mobile Cart Toggle FAB -->
+  <button class="cart-fab" id="cart-fab" style="color: var(--text-primary);">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
     <span class="cart-fab-count hidden" id="cart-fab-count">0</span>
   </button>
 
@@ -131,7 +148,7 @@
   <div class="modal-overlay" id="modal-floorplan">
     <div class="modal modal-lg">
       <div class="modal-header">
-        <h2 id="floorplan-modal-title">📍 Denah Meja Avorni</h2>
+        <h2 id="floorplan-modal-title" style="display: inline-flex; align-items: center; gap: 8px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Denah Meja Avorni</h2>
         <button class="modal-close" id="close-floorplan-btn">✕</button>
       </div>
       <div class="modal-body floorplan-body">
